@@ -12,15 +12,15 @@ import android.view.MenuItem
 import android.widget.FrameLayout
 
 import com.alvinhkh.buseta.R
-import com.alvinhkh.buseta.utils.AdViewUtil
+// import com.alvinhkh.buseta.utils.AdViewUtil
 import com.alvinhkh.buseta.utils.NightModeUtil
-import com.google.android.gms.ads.AdView
+// import com.google.android.gms.ads.AdView
 
 abstract class BasePreferenceActivity : AppCompatPreferenceActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private var adView: AdView? = null
+    // private var adView: AdView? = null
 
-    private var adViewContainer: FrameLayout? = null
+    // private var adViewContainer: FrameLayout? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,8 +28,8 @@ abstract class BasePreferenceActivity : AppCompatPreferenceActivity(), SharedPre
         setContentView(R.layout.activity_setting)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        adViewContainer = findViewById(R.id.adView_container)
-        adView = AdViewUtil.banner(adViewContainer!!, adView, true)
+        // adViewContainer = findViewById(R.id.adView_container)
+        // adView = AdViewUtil.banner(adViewContainer!!, adView, true)
 
         PreferenceManager.getDefaultSharedPreferences(this)
                 .registerOnSharedPreferenceChangeListener(this)
@@ -37,7 +37,7 @@ abstract class BasePreferenceActivity : AppCompatPreferenceActivity(), SharedPre
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        adView = AdViewUtil.banner(adViewContainer!!, adView, true)
+        // adView = AdViewUtil.banner(adViewContainer!!, adView, true)
     }
 
     override fun onSharedPreferenceChanged(sp: SharedPreferences, key: String) {
@@ -53,15 +53,15 @@ abstract class BasePreferenceActivity : AppCompatPreferenceActivity(), SharedPre
             recreate()
             return
         }
-        if (adView != null) {
-            adView!!.resume()
-        }
+        // if (adView != null) {
+        //    adView!!.resume()
+        // }
     }
 
     override fun onPause() {
-        if (adView != null) {
-            adView!!.pause()
-        }
+        // if (adView != null) {
+        //    adView!!.pause()
+        // }
         super.onPause()
     }
 

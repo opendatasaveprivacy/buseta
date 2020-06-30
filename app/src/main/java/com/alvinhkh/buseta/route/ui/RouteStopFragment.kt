@@ -53,16 +53,17 @@ import com.alvinhkh.buseta.route.dao.RouteDatabase
 import com.alvinhkh.buseta.route.model.Route
 import com.alvinhkh.buseta.route.model.RouteStop
 import com.alvinhkh.buseta.service.*
-import com.google.android.gms.location.Geofence
+/* import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-
+*/
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.CopyrightOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
@@ -76,7 +77,7 @@ import java.util.Locale
 import timber.log.Timber
 
 
-class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> {
+class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Void>*/ {
 
     private lateinit var arrivalTimeDatabase: ArrivalTimeDatabase
 
@@ -84,13 +85,13 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
 
     private lateinit var routeDatabase: RouteDatabase
 
-    private var mGeofencingClient: GeofencingClient? = null
+    // private var mGeofencingClient: GeofencingClient? = null
 
-    private var mGeofenceList: ArrayList<Geofence>? = null
+    // private var mGeofenceList: ArrayList<Geofence>? = null
 
-    private var mGeofencePendingIntent: PendingIntent? = null
+    // private var mGeofencePendingIntent: PendingIntent? = null
 
-    private var mPendingGeofenceTask = PendingGeofenceTask.NONE
+    // private var mPendingGeofenceTask = PendingGeofenceTask.NONE
 
     private var currentLocation: Location? = null
 
@@ -124,10 +125,10 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
      *
      * @return A PendingIntent for the IntentService that handles geofence transitions.
      */
-    private// Reuse the PendingIntent if we already have it.
+//  private// Reuse the PendingIntent if we already have it.
     // We use FLAG_UPDATE_CURRENT so that we get the same pending intent back when calling
     // addGeofences() and removeGeofences().
-    val geofencePendingIntent: PendingIntent
+/*    val geofencePendingIntent: PendingIntent
         get() {
             if (mGeofencePendingIntent != null) {
                 return mGeofencePendingIntent as PendingIntent
@@ -135,7 +136,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
             val intent = Intent(context, GeofenceTransitionsIntentService::class.java)
             return PendingIntent.getService(context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
         }
-
+*/
     /**
      * Returns true if geofences were added, otherwise false.
      */
@@ -155,12 +156,12 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
      * Builds and returns a GeofencingRequest. Specifies the list of geofences to be monitored.
      * Also specifies how the geofence notifications are initially triggered.
      */
-    private// The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
+//    private// The INITIAL_TRIGGER_ENTER flag indicates that geofencing service should trigger a
     // GEOFENCE_TRANSITION_ENTER notification when the geofence is added and if the device
     // is already inside that geofence.
     // Add the geofences to be monitored by geofencing service.
     // Return a GeofencingRequest.
-    val geofencingRequest: GeofencingRequest?
+/*    val geofencingRequest: GeofencingRequest?
         get() {
             if (mGeofenceList!!.size < 1) return null
             val builder = GeofencingRequest.Builder()
@@ -168,7 +169,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
             builder.addGeofences(mGeofenceList)
             return builder.build()
         }
-
+*/
     private val mBottomSheetBehaviorCallback = object : BottomSheetBehavior.BottomSheetCallback() {
         override fun onStateChanged(bottomSheet: View, newState: Int) {
             when (newState) {
@@ -202,10 +203,10 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
         followDatabase = FollowDatabase.getInstance(context!!)!!
         routeDatabase = RouteDatabase.getInstance(context!!)!!
 
-        mGeofenceList = ArrayList()
-        mGeofencePendingIntent = null
-        mGeofencingClient = LocationServices.getGeofencingClient(context!!)
-
+//        mGeofenceList = ArrayList()
+//        mGeofencePendingIntent = null
+//        mGeofencingClient = LocationServices.getGeofencingClient(context!!)
+/*
         if (activity != null &&
                 ActivityCompat.checkSelfPermission(activity!!,
                         Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -219,6 +220,8 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
                         }
                     }
         }
+
+ */
     }
 
     override fun onResume() {
@@ -245,6 +248,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
      * is available.
      * @param task the resulting Task, containing either a result or error.
      */
+    /*
     override fun onComplete(task: Task<Void>) {
         if (task.isSuccessful) {
             if (mPendingGeofenceTask == PendingGeofenceTask.ADD) {
@@ -264,7 +268,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
             R.drawable.ic_outline_alarm_add_36dp)
         mPendingGeofenceTask = PendingGeofenceTask.NONE
     }
-
+    */
     /**
      * Shows a [Snackbar] using `text`.
      *
@@ -305,6 +309,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
     /**
      * Performs the geofencing task that was pending until location permission was granted.
      */
+/*
     private fun performPendingGeofenceTask() {
         if (mPendingGeofenceTask == PendingGeofenceTask.ADD) {
             addGeofences()
@@ -312,7 +317,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
             removeGeofences()
         }
     }
-
+*/
     /**
      * Return the current state of the permissions needed.
      */
@@ -342,12 +347,14 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
      * specified geofences. Handles the success or failure results returned by addGeofences().
      */
     fun addGeofencesButtonHandler() {
-        mPendingGeofenceTask = PendingGeofenceTask.ADD
+/*        mPendingGeofenceTask = PendingGeofenceTask.ADD
         if (!checkPermissions()) {
             requestPermissions()
             return
         }
         addGeofences()
+
+ */
     }
 
     /**
@@ -369,12 +376,14 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
      * previously registered geofences.
      */
     fun removeGeofencesButtonHandler() {
-        mPendingGeofenceTask = PendingGeofenceTask.REMOVE
+/*        mPendingGeofenceTask = PendingGeofenceTask.REMOVE
         if (!checkPermissions()) {
             requestPermissions()
             return
         }
         removeGeofences()
+
+ */
     }
 
     /**
@@ -387,7 +396,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
             return
         }
 
-        mGeofencingClient?.removeGeofences(geofencePendingIntent)?.addOnCompleteListener(this)
+//        mGeofencingClient?.removeGeofences(geofencePendingIntent)?.addOnCompleteListener(this)
     }
 
     /**
@@ -403,7 +412,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
                     Timber.i("User interaction was cancelled.")
                 grantResults[0] == PackageManager.PERMISSION_GRANTED -> {
                     Timber.i("Permission granted.")
-                    performPendingGeofenceTask()
+//                    performPendingGeofenceTask()
                 }
                 else -> {
                     showSnackbar(R.string.permission_denied_explanation, R.string.title_settings
@@ -416,7 +425,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
                         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
                         startActivity(intent)
                     }
-                    mPendingGeofenceTask = PendingGeofenceTask.NONE
+//                    mPendingGeofenceTask = PendingGeofenceTask.NONE
                 }
             }
         }
@@ -503,7 +512,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
         vh.etaLastUpdateText = contentView.findViewById(R.id.eta_last_update)
 
         vh.mapView = contentView.findViewById(R.id.map)
-
+/*
         if (context != null && ActivityCompat.checkSelfPermission(context!!,
                         Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context!!,
                         Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -514,7 +523,7 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
             }
 
             // TODO: alert in last few stops
-            /*
+
             if (!TextUtils.isEmpty(routeStop.latitude) && !TextUtils.isEmpty(routeStop.longitude)) {
                 mGeofenceList.add(new Geofence.Builder()
                         .setRequestId(String.format(Locale.ENGLISH, "%s %s", routeStop.routeNo, routeStop.name))
@@ -528,8 +537,10 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
                                 Geofence.GEOFENCE_TRANSITION_EXIT)
                         .build());
             }
-             */
+
         }
+
+ */
 
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(context!!)
@@ -547,12 +558,12 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
                 vh.mapView?.visibility = View.VISIBLE
                 vh.mapView?.setTileSource(TileSourceFactory.MAPNIK)
                 vh.mapView?.setBuiltInZoomControls(false)
-                vh.mapView?.setMultiTouchControls(false)
+                vh.mapView?.setMultiTouchControls(true)
                 vh.mapView?.isTilesScaledToDpi = true
-                vh.mapView?.maxZoomLevel = 20.0
-                vh.mapView?.minZoomLevel = 14.0
+                vh.mapView?.maxZoomLevel = 18.0
+                vh.mapView?.minZoomLevel = 12.0
                 val mapController = vh.mapView?.controller
-                mapController?.setZoom(18.0)
+                mapController?.setZoom(17.0)
                 val startPoint = GeoPoint(routeStop?.latitude?.toDouble()?:0.0, routeStop?.longitude?.toDouble()?:0.0)
                 mapController?.setCenter(startPoint)
 
@@ -566,6 +577,12 @@ class RouteStopFragment : BottomSheetDialogFragment(), OnCompleteListener<Void> 
                         vh.mapView)
                 mCompassOverlay.enableCompass()
                 vh.mapView?.overlays?.add(mCompassOverlay)
+
+                val copyrightOverlay = CopyrightOverlay(context!!)
+                copyrightOverlay.setAlignRight(true)
+                copyrightOverlay.setTextSize(14)
+                vh.mapView?.overlays?.add(copyrightOverlay)
+
             } else {
                 vh.mapView?.visibility = View.GONE
             }

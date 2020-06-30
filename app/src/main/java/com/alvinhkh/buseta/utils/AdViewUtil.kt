@@ -7,13 +7,13 @@ import android.widget.FrameLayout
 
 import com.alvinhkh.buseta.C
 import com.alvinhkh.buseta.R
-import com.google.android.gms.ads.AdListener
+/* import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.AdView*/
 
 object AdViewUtil {
-
+/*
     @JvmStatic
     fun banner(adViewContainer: FrameLayout,
                _adView: AdView? = null,
@@ -51,5 +51,5 @@ object AdViewUtil {
             adView.loadAd(mAdRequest)
         }
         return adView
-    }
+    } */
 }

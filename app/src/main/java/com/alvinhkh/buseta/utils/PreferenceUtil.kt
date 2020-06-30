@@ -25,8 +25,9 @@ object PreferenceUtil {
     }
 
     fun isUsingNwstDataGovHkApi(context: Context): Boolean {
-        val mPrefs = PreferenceManager.getDefaultSharedPreferences(context)
-        return null != mPrefs && mPrefs.getString("nwst_api", "nwst_app") == "datagovhk_nwst"
+        //val mPrefs = PreferenceManager.getDefaultSharedPreferences(context)
+        //return null != mPrefs && mPrefs.getString("nwst_api", "nwst_app") == "datagovhk_nwst"
+        return true
     }
 
     fun shareAppIntent(context: Context): Intent {

@@ -1,5 +1,12 @@
 # BusETA - 香港巴士到站時間預報 App
 
+## 支持開放公共服務數據，結束資訊渠道壟斷
+
+* 此版本為經 odsp 修改的版本，以暫時保持與某巴 ETA 的兼容性。
+
+* 當中與 Google Play Service （地圖及到站提示），Firebase，廣告等部份，由於須另行編繹，不能使用原作者授權，已經停用，部份功能受影響。
+
+
 [![Banner](/images/banner.png?raw=true "BusETA (http://buseta.alvinhkh.com)")](http://bit.ly/hkbuseta)
 
 [![Screenshot - Home Page](/images/screenshot_home.png?raw=true "BusETA - Home Page")](http://bit.ly/hkbuseta)

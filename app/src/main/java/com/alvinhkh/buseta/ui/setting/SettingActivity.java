@@ -137,7 +137,8 @@ public class SettingActivity extends BasePreferenceActivity {
             appVersion.setSummary(versionName + " (" + versionCode +")");
             // Developer
             Preference developer = getPreferenceScreen().findPreference("developer");
-            developer.setSummary(getString(R.string.summary_developer) + " (" + getString(R.string.url_developer) + ")");
+            developer.setSummary(getString(R.string.summary_developer) + " (" + getString(R.string.url_developer) + ")\n"
+             + getString(R.string.summary_developer_note));
             //
             Preference shareApp = getPreferenceScreen().findPreference("share_app");
             shareApp.setOnPreferenceClickListener(this);

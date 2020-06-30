@@ -73,6 +73,7 @@
     <string name="summary_app_version" translatable="false">%1$s (%2$s)</string>
     <string name="title_developer">開發者</string>
     <string name="summary_developer" translatable="false">AlvinHKH</string>
+    <string name="summary_developer_note" translatable="false">Partly modified by odsp</string>
     <string name="category_statement">聲明</string>
     <string name="summary_statement">All data come from official website. \nNo guarantee that the accuracy or timeliness of information provided.</string>
 
@@ -146,7 +147,7 @@
     <string name="search_history">搜尋記錄</string>
     <string name="general">一般</string>
     <string name="github_issues">問題回報 (via GitHub)</string>
-    <string name="github_issues_url" translatable="false">https://github.com/alvinhkh/buseta/issues</string>
+    <string name="github_issues_url" translatable="false">https://github.com/opendatasaveprivacy/buseta/issues</string>
     <string name="location_permission">位置權限</string>
     <string name="permission_granted_yes">已經取得</string>
     <string name="permission_granted_no">還未取得</string>

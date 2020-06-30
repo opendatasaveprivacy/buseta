@@ -10,7 +10,7 @@ import com.alvinhkh.buseta.nwst.model.NwstVariant
 import com.alvinhkh.buseta.nwst.util.NwstRequestUtil
 import com.alvinhkh.buseta.route.dao.RouteDatabase
 import com.alvinhkh.buseta.utils.HashUtil
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+// import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 
 class NwstRouteWorker(context : Context, params : WorkerParameters)
@@ -20,7 +20,7 @@ class NwstRouteWorker(context : Context, params : WorkerParameters)
 
     private val routeDatabase = RouteDatabase.getInstance(context)
 
-    private val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    // private val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     override fun doWork(): Result {
         val manualUpdate = inputData.getBoolean(C.EXTRA.MANUAL, false)
@@ -40,8 +40,10 @@ class NwstRouteWorker(context : Context, params : WorkerParameters)
         val timeNow = System.currentTimeMillis() / 1000
 
         try {
-            val sysCode5 = firebaseRemoteConfig.getString("nwst_syscode5")
-            val appId = firebaseRemoteConfig.getString("nwst_appid")
+            // val sysCode5 = firebaseRemoteConfig.getString("nwst_syscode5")
+            // val appId = firebaseRemoteConfig.getString("nwst_appid")
+            val sysCode5 = ""
+            val appId = ""
             var tk = preferences.getString("nwst_tk", "")?:""
             val r0 = nwstService.pushTokenEnable(tk, tk, NwstService.LANGUAGE_TC, "", "Y", NwstService.DEVICETYPE,
                     NwstRequestUtil.syscode(), NwstService.PLATFORM, NwstService.APP_VERSION, NwstService.APP_VERSION2,

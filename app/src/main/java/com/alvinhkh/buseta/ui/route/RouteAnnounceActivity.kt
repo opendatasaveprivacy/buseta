@@ -47,10 +47,10 @@ class RouteAnnounceActivity : BaseActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         activityColor(route.companyColour(this))
 
-        adViewContainer = findViewById(R.id.adView_container)
-        if (adViewContainer != null) {
-            adView = AdViewUtil.banner(adViewContainer, adView, false)
-        }
+        // adViewContainer = findViewById(R.id.adView_container)
+        // if (adViewContainer != null) {
+        //    adView = AdViewUtil.banner(adViewContainer, adView, false)
+        // }
 
         fab = findViewById(R.id.fab)
 

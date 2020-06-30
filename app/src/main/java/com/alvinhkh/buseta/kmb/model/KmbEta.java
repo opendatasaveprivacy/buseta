@@ -38,9 +38,14 @@ public class KmbEta {
   @SerializedName("wifi")
   public String wifi;
 
+  @Nullable
+  @SerializedName("dis")
+  public String distance;
+
   public String toString() {
     return "KmbEta{wheelchair=" + this.wheelchair + ", expire=" + this.expire + ", eot=" + this.eot +
         ", timeText=" + this.time + ", schedule=" + this.schedule +
-        ", serviceType=" + this.serviceType + ", ol=" + this.ol + ", wifi=" + this.wifi + "}";
+        ", serviceType=" + this.serviceType + ", ol=" + this.ol + ", wifi=" + this.wifi + ", distance=" +
+        this.distance +"}";
   }
 }

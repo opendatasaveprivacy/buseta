@@ -5,15 +5,20 @@ import com.alvinhkh.buseta.kmb.model.KmbEtaRoutes;
 import com.alvinhkh.buseta.kmb.model.KmbRoutesInStop;
 import com.alvinhkh.buseta.kmb.model.network.KmbAnnounceRes;
 import com.alvinhkh.buseta.kmb.model.KmbBBI2;
+import com.alvinhkh.buseta.kmb.model.network.KmbEtaReq;
 import com.alvinhkh.buseta.kmb.model.network.KmbEtaRes;
 import com.alvinhkh.buseta.kmb.model.network.KmbRouteBoundRes;
 import com.alvinhkh.buseta.kmb.model.network.KmbScheduleRes;
 import com.alvinhkh.buseta.kmb.model.network.KmbSpecialRouteRes;
+import com.alvinhkh.buseta.kmb.model.network.KmbStimeRes;
 import com.alvinhkh.buseta.kmb.model.network.KmbStopsRes;
+import com.alvinhkh.buseta.kmb.util.DateDeserializer;
+import com.alvinhkh.buseta.kmb.util.KmbEtaSerializer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory;
 
+import java.util.Date;
 import java.util.List;
 
 import kotlinx.coroutines.Deferred;
@@ -22,7 +27,10 @@ import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.Headers;
+import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 
@@ -32,6 +40,7 @@ public interface KmbService {
 
     Gson gson = new GsonBuilder()
             .serializeNulls()
+            .registerTypeAdapter(KmbEtaReq.class, new KmbEtaSerializer())
             .create();
 
     Retrofit webCoroutine = new Retrofit.Builder()
@@ -99,12 +108,33 @@ public interface KmbService {
                         @Query("serviceType") String serviceType, @Query("lang") String lang,
                         @Query("updated") String updated);
 
-    Retrofit etadatafeed = new Retrofit.Builder()
-            .client(App.Companion.getHttpClient())
-            .baseUrl("http://etadatafeed.kmb.hk:1933")
+    Retrofit etav3a = new Retrofit.Builder()
+            .client(App.Companion.getHttpClient3())
+            .baseUrl("https://etav3.kmb.hk")
             .addConverterFactory(GsonConverterFactory.create(gson))
+            .build();
+
+    @Headers({
+            "Content-Type: application/json",
+            "connection: Keep-Alive"
+    })
+    @POST("?action=geteta")
+    Call<KmbEtaRes[]> eta(@Body KmbEtaReq body);
+
+    Gson gsonDate = new GsonBuilder()
+            .serializeNulls()
+            .registerTypeAdapter(Date.class, new DateDeserializer())
+            .create();
+
+    Retrofit etadatafeed = new Retrofit.Builder()
+            .client(App.Companion.getHttpClient2())
+            .baseUrl("http://etadatafeed.kmb.hk:1933")
+            .addConverterFactory(GsonConverterFactory.create(gsonDate))
             .build();
 
     @GET("GetData.ashx?type=ETA_R")
     Call<List<KmbEtaRoutes>> etaRoutes();
+
+    @GET("GetData.ashx?type=Server_T")
+    Call<List<KmbStimeRes>> etaSTime();
 }

@@ -44,8 +44,8 @@ import com.alvinhkh.buseta.utils.AdViewUtil;
 import com.alvinhkh.buseta.utils.NightModeUtil;
 import com.alvinhkh.buseta.utils.PreferenceUtil;
 import com.alvinhkh.buseta.search.dao.SuggestionSimpleCursorAdapter;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
+// import com.google.android.gms.ads.AdView;
+// import com.google.android.gms.ads.MobileAds;
 
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
@@ -60,7 +60,7 @@ abstract public class BaseActivity extends AppCompatActivity
 
     private static SuggestionDatabase suggestionDatabase = null;
 
-    protected AdView adView;
+    // protected AdView adView;
 
     protected FrameLayout adViewContainer;
 
@@ -132,16 +132,16 @@ abstract public class BaseActivity extends AppCompatActivity
         });
         adapter.setFilterQueryProvider(this);
 
-        MobileAds.initialize(this, getString(R.string.ADMOB_APP_ID));
+        // MobileAds.initialize(this, getString(R.string.ADMOB_APP_ID));
     }
 
     @Override
     public void onDestroy() {
         PreferenceManager.getDefaultSharedPreferences(this)
                 .unregisterOnSharedPreferenceChangeListener(this);
-        if (adView != null) {
-            adView.pause();
-        }
+        // if (adView != null) {
+        //    adView.pause();
+        // }
         disposables.clear();
         if (cursor != null) cursor.close();
         super.onDestroy();
@@ -217,9 +217,9 @@ abstract public class BaseActivity extends AppCompatActivity
             recreate();
             return;
         }
-        if (adView != null) {
-            adView.resume();
-        }
+        // if (adView != null) {
+        //    adView.resume();
+        // }
         // Set Toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         if (null != toolbar) {
@@ -239,9 +239,9 @@ abstract public class BaseActivity extends AppCompatActivity
         if (inputMethodManager != null) {
             inputMethodManager.hideSoftInputFromWindow(new View(this).getWindowToken(), 0);
         }
-        if (adView != null) {
-            adView.pause();
-        }
+        // if (adView != null) {
+        //    adView.pause();
+        // }
         super.onPause();
     }
 
@@ -252,20 +252,20 @@ abstract public class BaseActivity extends AppCompatActivity
                 NightModeUtil.update(this);
                 this.recreate();
                 break;
-            case C.PREF.AD_HIDE:
-                if (adViewContainer != null) {
-                    adView = AdViewUtil.banner(adViewContainer, adView, false);
-                }
-                break;
+            //case C.PREF.AD_HIDE:
+            //    if (adViewContainer != null) {
+            //        adView = AdViewUtil.banner(adViewContainer, adView, false);
+            //    }
+            //    break;
         }
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (adViewContainer != null) {
-            adView = AdViewUtil.banner(adViewContainer, adView, false);
-        }
+        // if (adViewContainer != null) {
+        //    adView = AdViewUtil.banner(adViewContainer, adView, false);
+        // }
     }
 
     protected void setToolbar() {
@@ -301,7 +301,7 @@ abstract public class BaseActivity extends AppCompatActivity
         collapseSearchView();
         boolean showMessage = true;
         query = query.toUpperCase();
-        if (query.equals(C.PREF.AD_KEY) || query.equals(C.PREF.AD_SHOW)) {
+        /*if (query.equals(C.PREF.AD_KEY) || query.equals(C.PREF.AD_SHOW)) {
             SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
             Boolean hidden = preferences.getBoolean(C.PREF.AD_HIDE, false);
             SharedPreferences.Editor editor = preferences.edit();
@@ -320,12 +320,12 @@ abstract public class BaseActivity extends AppCompatActivity
                 snackbar.show();
                 new Handler().postDelayed(snackbar::dismiss, 5000);
             }
-        } else {
+        } else { */
             Intent i = new Intent(Intent.ACTION_SEARCH);
             i.setClass(this, SearchActivity.class);
             i.putExtra(SearchManager.QUERY, query);
             startActivity(i);
-        }
+        // }
         return true;
     }
 

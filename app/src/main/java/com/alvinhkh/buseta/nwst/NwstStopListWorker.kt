@@ -13,7 +13,7 @@ import com.alvinhkh.buseta.nwst.util.NwstRequestUtil
 import com.alvinhkh.buseta.route.dao.RouteDatabase
 import com.alvinhkh.buseta.route.model.LatLong
 import com.alvinhkh.buseta.route.model.RouteStop
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+// import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 
 class NwstStopListWorker(context : Context, params : WorkerParameters)
@@ -23,7 +23,7 @@ class NwstStopListWorker(context : Context, params : WorkerParameters)
 
     private val routeDatabase = RouteDatabase.getInstance(context)
 
-    private val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    // private val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     override fun doWork(): Result {
         val companyCode = inputData.getString(C.EXTRA.COMPANY_CODE)?:C.PROVIDER.NWST
@@ -44,8 +44,10 @@ class NwstStopListWorker(context : Context, params : WorkerParameters)
             return Result.failure(outputData)
         }
         try {
-            val sysCode5 = firebaseRemoteConfig.getString("nwst_syscode5")
-            val appId = firebaseRemoteConfig.getString("nwst_appid")
+            // val sysCode5 = firebaseRemoteConfig.getString("nwst_syscode5")
+            // val appId = firebaseRemoteConfig.getString("nwst_appid")
+            val sysCode5 = ""
+            val appId = ""
             val response = nwstService.ppStopList(qInfo, NwstService.LANGUAGE_TC,
                     NwstRequestUtil.syscode(), NwstService.PLATFORM, NwstService.APP_VERSION, sysCode5, appId).execute()
             if (!response.isSuccessful) {

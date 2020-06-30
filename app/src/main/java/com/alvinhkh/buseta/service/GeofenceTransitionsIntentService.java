@@ -18,8 +18,8 @@ import androidx.core.app.NotificationCompat;
 import com.alvinhkh.buseta.C;
 import com.alvinhkh.buseta.R;
 import com.alvinhkh.buseta.search.ui.SearchActivity;
-import com.google.android.gms.location.Geofence;
-import com.google.android.gms.location.GeofencingEvent;
+// import com.google.android.gms.location.Geofence;
+// import com.google.android.gms.location.GeofencingEvent;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
      */
     @Override
     protected void onHandleIntent(Intent intent) {
-        GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
+/*        GeofencingEvent geofencingEvent = GeofencingEvent.fromIntent(intent);
         if (geofencingEvent.hasError()) {
             Timber.e("GeofenceError: %s", geofencingEvent.getErrorCode());
             return;
@@ -73,6 +73,8 @@ public class GeofenceTransitionsIntentService extends IntentService {
         } else {
             Timber.d("GeofenceError: %s", transition);
         }
+
+ */
     }
 
     private void sendNotification(int id, @NonNull String title, @Nullable String text) {
@@ -124,6 +126,7 @@ public class GeofenceTransitionsIntentService extends IntentService {
      * @param transitionType    A transition type constant defined in Geofence
      * @return                  A String indicating the type of transition
      */
+/*
     private String getTransitionString(int transitionType) {
         switch (transitionType) {
             case Geofence.GEOFENCE_TRANSITION_ENTER:
@@ -133,5 +136,9 @@ public class GeofenceTransitionsIntentService extends IntentService {
             default:
                 return getString(R.string.arrival_alert_unknown);
         }
+
     }
+
+
+ */
 }

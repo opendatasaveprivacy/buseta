@@ -11,7 +11,7 @@ import com.alvinhkh.buseta.nwst.model.NwstEta
 import com.alvinhkh.buseta.nwst.util.NwstRequestUtil
 import com.alvinhkh.buseta.route.dao.RouteDatabase
 import com.alvinhkh.buseta.utils.HashUtil
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+// import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.Jsoup
 import timber.log.Timber
 import java.util.*
@@ -27,7 +27,7 @@ class NwstEtaWorker(private val context : Context, params : WorkerParameters)
 
     private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    private val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
+    // private val firebaseRemoteConfig = FirebaseRemoteConfig.getInstance()
 
     override fun doWork(): Result {
         val widgetId = inputData.getInt(C.EXTRA.WIDGET_UPDATE, -1)
@@ -57,8 +57,10 @@ class NwstEtaWorker(private val context : Context, params : WorkerParameters)
                 ?: return Result.failure(outputData)
         
         try {
-            val sysCode5 = firebaseRemoteConfig.getString("nwst_syscode5")
-            val appId = firebaseRemoteConfig.getString("nwst_appid")
+            // val sysCode5 = firebaseRemoteConfig.getString("nwst_syscode5")
+            // val appId = firebaseRemoteConfig.getString("nwst_appid")
+            val sysCode5 = ""
+            val appId = ""
             var tk = preferences.getString("nwst_tk", "")?:""
             val r0 = nwstService.pushTokenEnable(tk, tk, NwstService.LANGUAGE_TC, "", "Y", NwstService.DEVICETYPE,
                     NwstRequestUtil.syscode(), NwstService.PLATFORM, NwstService.APP_VERSION, NwstService.APP_VERSION2,

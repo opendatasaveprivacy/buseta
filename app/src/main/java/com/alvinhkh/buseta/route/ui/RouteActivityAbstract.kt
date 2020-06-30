@@ -65,25 +65,26 @@ import com.alvinhkh.buseta.search.model.Suggestion
 import com.alvinhkh.buseta.service.EtaService
 import com.alvinhkh.buseta.ui.BaseActivity
 import com.alvinhkh.buseta.ui.setting.SettingActivity
-import com.alvinhkh.buseta.utils.AdViewUtil
+// import com.alvinhkh.buseta.utils.AdViewUtil
 import com.alvinhkh.buseta.utils.ColorUtil
 import com.alvinhkh.buseta.utils.ConnectivityUtil
 import com.alvinhkh.buseta.utils.PreferenceUtil
-import com.crashlytics.android.answers.Answers
-import com.crashlytics.android.answers.ContentViewEvent
-import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.*
-import com.google.firebase.appindexing.Action
-import com.google.firebase.appindexing.FirebaseUserActions
-import com.google.maps.android.ui.IconGenerator
+// import com.crashlytics.android.answers.Answers
+// import com.crashlytics.android.answers.ContentViewEvent
+// import com.google.android.gms.maps.*
+// import com.google.android.gms.maps.model.*
+// import com.google.firebase.appindexing.Action
+// import com.google.firebase.appindexing.FirebaseUserActions
+// import com.google.maps.android.ui.IconGenerator
 
 import timber.log.Timber
 import java.lang.ref.WeakReference
 import java.util.HashMap
 import java.util.UUID
 
-abstract class RouteActivityAbstract : BaseActivity(),
-        OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+abstract class RouteActivityAbstract : BaseActivity() //,
+        //OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+        {
 
     lateinit var arrivalTimeDatabase: ArrivalTimeDatabase
 
@@ -112,9 +113,9 @@ abstract class RouteActivityAbstract : BaseActivity(),
 
     private var showMapMenuItem: MenuItem? = null
 
-    private var mapFragment: SupportMapFragment? = null
+ //   private var mapFragment: SupportMapFragment? = null
 
-    private var map: GoogleMap? = null
+ //   private var map: GoogleMap? = null
 
     private var currentRoute: Route? = null
 
@@ -136,7 +137,7 @@ abstract class RouteActivityAbstract : BaseActivity(),
 
     private var isShowMap: Boolean = false
 
-    private val markerMap = HashMap<String, Marker>()
+  // private val markerMap = HashMap<String, Marker>()
 
     private val mapHandler = Handler()
 
@@ -170,10 +171,10 @@ abstract class RouteActivityAbstract : BaseActivity(),
         actionBar?.subtitle = null
         actionBar?.setDisplayHomeAsUpEnabled(true)
 
-        adViewContainer = findViewById(R.id.adView_container)
-        with(adViewContainer) {
-            adView = AdViewUtil.banner(this)
-        }
+        // adViewContainer = findViewById(R.id.adView_container)
+        // with(adViewContainer) {
+        //    adView = AdViewUtil.banner(this)
+        //}
         fab = findViewById(R.id.fab)
 
         emptyView = findViewById(android.R.id.empty)
@@ -219,9 +220,9 @@ abstract class RouteActivityAbstract : BaseActivity(),
                 currentRoute = pagerAdapter.routeList[position]
                 if (isShowMap) {
                     mapHandler.removeCallbacksAndMessages(null)
-                    mapHandler.postDelayed({
-                        loadMapMarkers(currentRoute!!)
-                    }, 200)
+                    // mapHandler.postDelayed({
+                    //    loadMapMarkers(currentRoute!!)
+                    // }, 200)
                 }
             }
         })
@@ -432,9 +433,9 @@ abstract class RouteActivityAbstract : BaseActivity(),
                 if (viewPager.currentItem == fragNo && viewPager.currentItem < pagerAdapter.routeList.size) {
                     currentRoute = pagerAdapter.routeList[viewPager.currentItem]
                     mapHandler.removeCallbacksAndMessages(null)
-                    mapHandler.postDelayed({
-                        loadMapMarkers(currentRoute!!)
-                    }, 200)
+                    // mapHandler.postDelayed({
+                    //    loadMapMarkers(currentRoute!!)
+                    // }, 200)
                 }
             }
 
@@ -523,16 +524,16 @@ abstract class RouteActivityAbstract : BaseActivity(),
         val guideline = findViewById<Guideline>(R.id.guideline)
         if (!isShowMap) {
             findViewById<FrameLayout>(R.id.map).visibility = View.GONE
-            if (mapFragment != null) {
+            /* if (mapFragment != null) {
                 val ft = supportFragmentManager.beginTransaction()
                 ft.remove(mapFragment!!)
                 ft.commitAllowingStateLoss()
-            }
+            } */
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 guideline?.setGuidelinePercent(0.0f)
             }
         } else {
-            mapFragment = SupportMapFragment.newInstance()
+           /* mapFragment = SupportMapFragment.newInstance()
             if (mapFragment != null && !mapFragment!!.isAdded) {
                 mapFragment!!.getMapAsync(this)
                 supportFragmentManager.beginTransaction().replace(R.id.map, mapFragment!!).commit()
@@ -541,7 +542,7 @@ abstract class RouteActivityAbstract : BaseActivity(),
                 } else {
                     lp.setMargins(0, 0, 0, 440)
                 }
-            }
+            }*/
         }
         findViewById<Toolbar>(R.id.toolbar).layoutParams = lp
     }
@@ -553,6 +554,7 @@ abstract class RouteActivityAbstract : BaseActivity(),
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
      */
+  /*
     override fun onMapReady(googleMap: GoogleMap?) {
         if (googleMap == null) return
         map = googleMap
@@ -745,6 +747,11 @@ abstract class RouteActivityAbstract : BaseActivity(),
                     }
                 }
     }
+
+*/
+        private fun appIndexStart(suggestion: Suggestion) {}
+
+        private fun appIndexStop(suggestion: Suggestion) {}
 
     private fun activityColor(color: Int) {
         supportActionBar?.setBackgroundDrawable(ColorDrawable(color))

@@ -38,14 +38,14 @@ import com.alvinhkh.buseta.route.ui.RouteStopListViewAdapter.Data.Companion.TYPE
 import com.alvinhkh.buseta.route.ui.RouteStopListViewAdapter.Data.Companion.TYPE_ROUTE_STOP
 import com.alvinhkh.buseta.service.EtaService
 import com.alvinhkh.buseta.ui.route.RouteAnnounceActivity
-import com.google.android.gms.location.LocationCallback
+/* import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
-import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationServices */
 
 import com.alvinhkh.buseta.utils.ConnectivityUtil
 import com.alvinhkh.buseta.utils.PreferenceUtil
-import com.google.android.gms.maps.model.Marker
+// import com.google.android.gms.maps.model.Marker
 import java.util.UUID
 
 
@@ -124,7 +124,7 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
             }
         }
     }
-
+/*
     private var locationCallback: LocationCallback? = object : LocationCallback() {
         override fun onLocationResult(locationResult: LocationResult?) {
             if (locationResult == null) {
@@ -137,7 +137,7 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
             }
         }
     }
-
+*/
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -159,12 +159,14 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
         emptyText = rootView.findViewById(R.id.empty_text)
         emptyText.setText(R.string.message_loading)
         if (fragmentManager == null) return rootView
-        if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        /* if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
                 || ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.getFusedLocationProviderClient(context!!)
                     .lastLocation
                     .addOnSuccessListener { location -> if (location != null) viewAdapter?.setCurrentLocation(location) }
         }
+
+         */
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout)
         swipeRefreshLayout.isEnabled = false
@@ -421,7 +423,7 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
         return true
     }
 
-    fun onMarkerClick(marker: Marker) {
+/*    fun onMarkerClick(marker: Marker) {
         if (marker.tag is RouteStop) {
             val markerStop = marker.tag as RouteStop?
             for (i in 0 until (viewAdapter?.itemCount?:0)) {
@@ -441,7 +443,7 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
             }
         }
     }
-
+*/
     private fun showEmptyMessage(s: String?) {
         if (swipeRefreshLayout.isRefreshing) {
             swipeRefreshLayout.isRefreshing = false
@@ -457,7 +459,7 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
             emptyText.text = s
         }
     }
-
+/*
     private fun startLocationUpdates() {
         if (context == null || locationCallback == null) return
         if (ActivityCompat.checkSelfPermission(context!!,
@@ -476,4 +478,8 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
         if (context == null || locationCallback == null) return
         LocationServices.getFusedLocationProviderClient(context!!).removeLocationUpdates(locationCallback!!)
     }
+
+ */
+    private fun startLocationUpdates() {}
+    private fun stopLocationUpdates() {}
 }

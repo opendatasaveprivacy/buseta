@@ -10,7 +10,7 @@ data class KmbEtaRes(
         @SerializedName("responsecode")
         var responsecode: Int? = null,
 
-        @SerializedName("response")
+        @SerializedName("eta")
         var etas: ArrayList<KmbEta>? = null,
 
         @SerializedName("generated")

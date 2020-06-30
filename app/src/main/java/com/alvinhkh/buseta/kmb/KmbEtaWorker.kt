@@ -8,13 +8,15 @@ import com.alvinhkh.buseta.C
 import com.alvinhkh.buseta.R
 import com.alvinhkh.buseta.arrivaltime.dao.ArrivalTimeDatabase
 import com.alvinhkh.buseta.arrivaltime.model.ArrivalTime
+import com.alvinhkh.buseta.kmb.util.KmbServiceRequest.KmbEtaSpec
+import com.alvinhkh.buseta.kmb.util.KmbServiceRequest
 import com.alvinhkh.buseta.route.dao.RouteDatabase
 import org.jsoup.Jsoup
 
 class KmbEtaWorker(private val context : Context, params : WorkerParameters)
     : Worker(context, params) {
 
-    private val kmbService = KmbService.etav3.create(KmbService::class.java)
+    private val kmbService = KmbService.etav3a.create(KmbService::class.java)
 
     private val arrivalTimeDatabase = ArrivalTimeDatabase.getInstance(context)!!
 
@@ -49,10 +51,16 @@ class KmbEtaWorker(private val context : Context, params : WorkerParameters)
         val arrivalTimeList = arrayListOf<ArrivalTime>()
         val timeNow = System.currentTimeMillis()
 
+        val serviceRequest = KmbServiceRequest(context, kmbService)
         try {
-            val response = kmbService.eta(routeStop.routeNo, routeStop.routeSequence,
-                    routeStop.stopId, routeStop.sequence, routeStop.routeServiceType, "tc", "").execute()
-            if (!response.isSuccessful) {
+            val results = serviceRequest.getEta(KmbEtaSpec(
+                    routeStop.routeNo, routeStop.routeSequence, routeStop.sequence,
+                    routeStop.routeServiceType), "tc")
+
+            //val response = kmbService.eta(routeStop.routeNo, routeStop.routeSequence,
+            //        routeStop.stopId, routeStop.sequence, routeStop.routeServiceType, "tc", "").execute()
+            // if (!response.isSuccessful) {
+            if (results.isNullOrEmpty()) {
                 if (!routeStop.routeNo.isNullOrEmpty() && !routeStop.stopId.isNullOrEmpty()
                         && !routeStop.sequence.isNullOrEmpty()) {
                     arrivalTimeDatabase.arrivalTimeDao().clear(routeStop.companyCode!!, routeStop.routeNo!!,
@@ -64,8 +72,8 @@ class KmbEtaWorker(private val context : Context, params : WorkerParameters)
                 return Result.failure(outputData)
             }
 
-            val res = response.body()
-            if (res == null) {
+            val res = results[0]
+            /*if (res == null) {
                 if (!routeStop.routeNo.isNullOrEmpty() && !routeStop.stopId.isNullOrEmpty()
                         && !routeStop.sequence.isNullOrEmpty()) {
                     arrivalTimeDatabase.arrivalTimeDao().clear(routeStop.companyCode!!, routeStop.routeNo!!,
@@ -74,7 +82,7 @@ class KmbEtaWorker(private val context : Context, params : WorkerParameters)
                 val arrivalTime = ArrivalTime.emptyInstance(applicationContext, routeStop)
                 arrivalTimeDatabase.arrivalTimeDao().insert(arrivalTime)
                 return Result.failure(outputData)
-            }
+            }*/
 
             if (res.etas != null && res.etas!!.size > 0) {
                 for (i in res.etas!!.indices) {
@@ -104,6 +112,7 @@ class KmbEtaWorker(private val context : Context, params : WorkerParameters)
                     arrivalTime.stopId = routeStop.stopId?:""
                     arrivalTime.stopSeq = routeStop.sequence?:""
                     arrivalTime.order = i.toString()
+                    arrivalTime.distanceKM = kmbEta.distance?.toDoubleOrNull()?.div(1000)?:-1.0
                     arrivalTimeList.add(arrivalTime)
                 }
                 arrivalTimeDatabase.arrivalTimeDao().insert(arrivalTimeList)

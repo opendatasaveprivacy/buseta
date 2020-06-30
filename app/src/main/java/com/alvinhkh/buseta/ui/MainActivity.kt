@@ -20,22 +20,23 @@ import com.alvinhkh.buseta.mtr.ui.MtrLineStatusFragment
 import com.alvinhkh.buseta.search.ui.HistoryFragment
 import com.alvinhkh.buseta.service.ProviderUpdateService
 import com.alvinhkh.buseta.ui.webview.WebViewFragment
-import com.alvinhkh.buseta.utils.AdViewUtil
+// import com.alvinhkh.buseta.utils.AdViewUtil
 import com.alvinhkh.buseta.utils.ColorUtil
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.play.core.appupdate.AppUpdateManager
+/* import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+ */
 import timber.log.Timber
 
 
 class MainActivity : BaseActivity() {
 
     private val APP_UPDATE_REQUEST_CODE = 1100
-    private lateinit var appUpdateManager: AppUpdateManager
+    // private lateinit var appUpdateManager: AppUpdateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +47,8 @@ class MainActivity : BaseActivity() {
             subtitle = null
             setDisplayHomeAsUpEnabled(false)
         }
-        adViewContainer = findViewById(R.id.adView_container)
-        adView = AdViewUtil.banner(adViewContainer)
+        // adViewContainer = findViewById(R.id.adView_container)
+        // adView = AdViewUtil.banner(adViewContainer)
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottom_navigation)
         bottomNavigationView.setOnNavigationItemSelectedListener { item ->
             @ColorInt var colorRes = 0
@@ -114,8 +115,8 @@ class MainActivity : BaseActivity() {
                     window?.statusBarColor = darkenColor
                     window?.navigationBarColor = darkenColor
                 }
-                adViewContainer.setBackgroundColor(colorRes)
-                adView = AdViewUtil.banner(adViewContainer, adView, false)
+                // adViewContainer.setBackgroundColor(colorRes)
+                // adView = AdViewUtil.banner(adViewContainer, adView, false)
             }
             if (Build.VERSION.SDK_INT >= 28) {
                 setTaskDescription(ActivityManager.TaskDescription(title, R.mipmap.ic_launcher,
@@ -152,7 +153,7 @@ class MainActivity : BaseActivity() {
         } catch (ignored: Throwable) {
         }
 
-        val listener = InstallStateUpdatedListener { state ->
+        /* val listener = InstallStateUpdatedListener { state ->
             Timber.d("InAppUpdate: state=%s", state)
             if (state.installStatus() == InstallStatus.DOWNLOADED) {
                 popupSnackbarForCompleteUpdate()
@@ -176,7 +177,7 @@ class MainActivity : BaseActivity() {
             } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
                 popupSnackbarForCompleteUpdate()
             }
-        }
+        }*/
     }
 
     override fun onBackPressed() {
@@ -189,7 +190,7 @@ class MainActivity : BaseActivity() {
 
     override fun onResume() {
         super.onResume()
-        appUpdateManager
+        /* appUpdateManager
                 .appUpdateInfo
                 .addOnSuccessListener { appUpdateInfo ->
                     // If the update is downloaded but not installed,
@@ -198,6 +199,8 @@ class MainActivity : BaseActivity() {
                         popupSnackbarForCompleteUpdate()
                     }
                 }
+
+         */
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -209,6 +212,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    /*
     private fun popupSnackbarForCompleteUpdate() {
         Timber.i("InAppUpdate: An update has just been downloaded.")
         Snackbar.make(
@@ -220,4 +224,5 @@ class MainActivity : BaseActivity() {
             show()
         }
     }
+     */
 }

@@ -121,9 +121,9 @@ class RouteStopListViewAdapter(
                     val intent = Intent(itemView.context, EtaService::class.java)
                     intent.putExtra(C.EXTRA.STOP_OBJECT, routeStop)
                     itemView.context.startService(intent)
-                    if (activity is RouteActivityAbstract && !routeStop.latitude.isNullOrEmpty() && !routeStop.longitude.isNullOrEmpty()) {
-                        activity.mapCamera(routeStop.latitude?.toDouble()?:0.0, routeStop.longitude?.toDouble()?:0.0)
-                    }
+                    // if (activity is RouteActivityAbstract && !routeStop.latitude.isNullOrEmpty() && !routeStop.longitude.isNullOrEmpty()) {
+                    //    activity.mapCamera(routeStop.latitude?.toDouble()?:0.0, routeStop.longitude?.toDouble()?:0.0)
+                    //}
                 }
                 itemView.setOnLongClickListener {
                     try {
