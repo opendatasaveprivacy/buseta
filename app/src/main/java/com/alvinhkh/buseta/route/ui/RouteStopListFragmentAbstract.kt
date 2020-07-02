@@ -45,6 +45,7 @@ import com.google.android.gms.location.LocationServices */
 
 import com.alvinhkh.buseta.utils.ConnectivityUtil
 import com.alvinhkh.buseta.utils.PreferenceUtil
+import com.mapzen.android.lost.api.*
 // import com.google.android.gms.maps.model.Marker
 import java.util.UUID
 
@@ -53,7 +54,7 @@ import java.util.UUID
 // TODO: keep (nearest) stop on top
 // TODO: auto refresh eta for follow stop and nearby stop
 abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.OnRefreshListener,
-        SharedPreferences.OnSharedPreferenceChangeListener {
+        SharedPreferences.OnSharedPreferenceChangeListener, LostApiClient.ConnectionCallbacks {
 
     private val SCROLL_POSITION_STATE_KEY = "SCROLL_POSITION_STATE_KEY"
 
@@ -124,20 +125,26 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
             }
         }
     }
-/*
-    private var locationCallback: LocationCallback? = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult?) {
-            if (locationResult == null) {
-                return
+
+    private var lostApiClient: LostApiClient? = null
+
+    private var locationCallback: LocationListener = LocationListener {
+        System.out.println("xxxx location callback")
+            if (it != null) {
+                viewAdapter?.setCurrentLocation(it)
             }
-            for (location in locationResult.locations) {
-                if (location != null) {
-                    viewAdapter?.setCurrentLocation(location)
-                }
-            }
-        }
     }
-*/
+
+    override fun onConnected() {
+       startLocationUpdates()
+    }
+
+    override fun onConnectionSuspended() {
+    }
+
+
+    private var updateStarted = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
@@ -147,6 +154,12 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
         if (context == null) return
         PreferenceManager.getDefaultSharedPreferences(context!!)
                 .registerOnSharedPreferenceChangeListener(this)
+        if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            lostApiClient = LostApiClient.Builder(this.context)
+                    .addConnectionCallbacks(this)
+                    .build()
+            lostApiClient?.connect()
+         }
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -158,15 +171,22 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
         progressBar.visibility = View.VISIBLE
         emptyText = rootView.findViewById(R.id.empty_text)
         emptyText.setText(R.string.message_loading)
-        if (fragmentManager == null) return rootView
-        /* if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-                || ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            LocationServices.getFusedLocationProviderClient(context!!)
-                    .lastLocation
-                    .addOnSuccessListener { location -> if (location != null) viewAdapter?.setCurrentLocation(location) }
-        }
 
-         */
+
+        if (fragmentManager == null) return rootView
+        /*if (ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+                || ActivityCompat.checkSelfPermission(context!!, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            lostApiClient = LostApiClient.Builder(this.context)
+                    .addConnectionCallbacks(this)
+                    .build()
+            lostApiClient?.connect()
+            fusedLocationProviderClient = LocationServices.FusedLocationApi //getFusedLocationProviderClient(context!!)
+            //LocationServices.getFusedLocationProviderClient(context!!)
+            //        .lastLocation
+            //        .addOnSuccessListener { location -> if (location != null) viewAdapter?.setCurrentLocation(location) }
+        }*/
+
+
 
         swipeRefreshLayout = rootView.findViewById(R.id.swipe_refresh_layout)
         swipeRefreshLayout.isEnabled = false
@@ -315,6 +335,8 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
             PreferenceManager.getDefaultSharedPreferences(context!!)
                     .unregisterOnSharedPreferenceChangeListener(this)
         }
+        lostApiClient?.unregisterConnectionCallbacks(this)
+        lostApiClient?.disconnect()
         super.onDestroy()
     }
 
@@ -459,27 +481,43 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
             emptyText.text = s
         }
     }
-/*
+
     private fun startLocationUpdates() {
         if (context == null || locationCallback == null) return
+        if (updateStarted) return
+
+        if (!(lostApiClient?.isConnected()?:false)) {
+            return
+        }
+
         if (ActivityCompat.checkSelfPermission(context!!,
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context!!,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            val locationRequest = LocationRequest.create()
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            val request: LocationRequest = LocationRequest.create()
+                    .setInterval(10000)
+                    .setFastestInterval(5000)
+                    .setSmallestDisplacement(10.0F)
+                    .setPriority(LocationRequest.PRIORITY_GPS_ONLY)
+            LocationServices.FusedLocationApi.requestLocationUpdates(
+                    lostApiClient, request, locationCallback)
+
+            /* val locationRequest = LocationRequest.create()
             locationRequest.interval = 10000
             locationRequest.fastestInterval = (10000 / 2).toLong()
             locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
             LocationServices.getFusedLocationProviderClient(context!!)
                     .requestLocationUpdates(locationRequest, locationCallback!!, null/* Looper */)
+
+             */
+            updateStarted = true
         }
     }
 
     private fun stopLocationUpdates() {
         if (context == null || locationCallback == null) return
-        LocationServices.getFusedLocationProviderClient(context!!).removeLocationUpdates(locationCallback!!)
+        if (updateStarted) {
+            LocationServices.FusedLocationApi.removeLocationUpdates(lostApiClient, locationCallback)
+            updateStarted = false
+        }
     }
 
- */
-    private fun startLocationUpdates() {}
-    private fun stopLocationUpdates() {}
 }

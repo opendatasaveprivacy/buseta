@@ -82,7 +82,7 @@ android {
 
     kapt {
         arguments {
-            arg("room.schemaLocation", "$projectDir/singleRetries".toString())
+            arg("room.schemaLocation", "$projectDir/schemas".toString())
         }
     }
 }
@@ -118,6 +118,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:17.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0' */
     implementation 'com.google.android.gms:play-services-oss-licenses:17.0.0'
+    implementation 'com.github.hammerheadnav:lost:master'
     /* implementation 'com.google.android.play:core:1.6.5'
     */
     implementation 'com.google.code.gson:gson:2.8.6'

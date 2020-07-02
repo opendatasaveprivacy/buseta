@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 data class NwstResponseList<T>(
         @SerializedName("type")
         var type: String? = null,
-        @SerializedName("reqBound")
+        @SerializedName("version")
         var version: String? = null,
         @SerializedName("generated_timestamp")
         var generatedTimestamp: String? = null,

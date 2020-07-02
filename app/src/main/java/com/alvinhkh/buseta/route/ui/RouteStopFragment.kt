@@ -8,7 +8,9 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.location.Location
@@ -35,6 +37,7 @@ import android.view.View
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
+import androidx.fragment.app.FragmentActivity
 import androidx.work.Data
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkInfo
@@ -53,6 +56,8 @@ import com.alvinhkh.buseta.route.dao.RouteDatabase
 import com.alvinhkh.buseta.route.model.Route
 import com.alvinhkh.buseta.route.model.RouteStop
 import com.alvinhkh.buseta.service.*
+import com.mapzen.android.lost.api.*
+import com.mapzen.android.lost.api.LocationServices.FusedLocationApi
 /* import com.google.android.gms.location.Geofence
 import com.google.android.gms.location.GeofencingClient
 import com.google.android.gms.location.GeofencingRequest
@@ -60,6 +65,7 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 */
+
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
@@ -67,6 +73,9 @@ import org.osmdroid.views.overlay.CopyrightOverlay
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
+import org.osmdroid.views.overlay.mylocation.IMyLocationConsumer
+import org.osmdroid.views.overlay.mylocation.IMyLocationProvider
+import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
@@ -85,13 +94,62 @@ class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Voi
 
     private lateinit var routeDatabase: RouteDatabase
 
+    private var mMyLocationOverlay: MyLocationNewOverlay? = null
+
+    private var lostApiClient: LostApiClient? = null
     // private var mGeofencingClient: GeofencingClient? = null
 
-    // private var mGeofenceList: ArrayList<Geofence>? = null
+    private var mMyLocationConsumer: IMyLocationConsumer? = null
 
-    // private var mGeofencePendingIntent: PendingIntent? = null
+    private var updateStarted = false
 
-    // private var mPendingGeofenceTask = PendingGeofenceTask.NONE
+    private val myLocationProvider: IMyLocationProvider = object : IMyLocationProvider {
+        override fun destroy() {
+
+        }
+
+        override fun startLocationProvider(myLocationConsumer: IMyLocationConsumer?): Boolean {
+            mMyLocationConsumer = myLocationConsumer
+            return true
+        }
+
+        override fun stopLocationProvider() {
+            mMyLocationConsumer=null
+        }
+
+        override fun getLastKnownLocation(): Location? {
+            return currentLocation
+        }
+    }
+
+    private var locationCallback: LocationListener = LocationListener {
+        mMyLocationConsumer?.onLocationChanged(it, null)
+        if (it != null) {
+            currentLocation = it
+            val activity: FragmentActivity? = this.activity
+            activity?.runOnUiThread {
+                updateDistanceDisplay()
+            }
+        }
+    }
+
+    private var connectionCallback: LostApiClient.ConnectionCallbacks = object: LostApiClient.ConnectionCallbacks {
+        override fun onConnected() {
+            startLocationUpdates()
+        }
+        override fun onConnectionSuspended() {
+
+        }
+    }
+
+
+    private var mGeofencingClient: GeofencingApi? = null
+
+    private var mGeofenceList: ArrayList<Geofence>? = null
+
+    private var mGeofencePendingIntent: PendingIntent? = null
+
+    private var mPendingGeofenceTask = PendingGeofenceTask.NONE
 
     private var currentLocation: Location? = null
 
@@ -203,25 +261,27 @@ class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Voi
         followDatabase = FollowDatabase.getInstance(context!!)!!
         routeDatabase = RouteDatabase.getInstance(context!!)!!
 
-//        mGeofenceList = ArrayList()
-//        mGeofencePendingIntent = null
-//        mGeofencingClient = LocationServices.getGeofencingClient(context!!)
-/*
+        mGeofenceList = ArrayList()
+        mGeofencePendingIntent = null
+        mGeofencingClient = LocationServices.GeofencingApi //getGeofencingClient(context!!)
+
         if (activity != null &&
                 ActivityCompat.checkSelfPermission(activity!!,
-                        Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(activity!!,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(context!!)
-            fusedLocationProviderClient.lastLocation
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            lostApiClient = LostApiClient.Builder(this.context)
+                    .addConnectionCallbacks(connectionCallback)
+                    .build()
+            lostApiClient?.connect()
+
+            /*  // .lastLocation
                     .addOnSuccessListener(activity!!) { location ->
                         if (location != null) {
                             currentLocation = location
                         }
                     }
+                    */
         }
 
- */
     }
 
     override fun onResume() {
@@ -236,11 +296,20 @@ class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Voi
             }
         }
         refreshHandler.post(refreshRunnable)
+        startLocationUpdates()
     }
 
     override fun onPause() {
         super.onPause()
         refreshHandler.removeCallbacksAndMessages(refreshRunnable)
+        stopLocationUpdates()
+    }
+
+    override fun onDestroy() {
+        // fusedLocationProviderClient?.removeLocationUpdates(lostApiClient, locationCallback)
+        lostApiClient?.unregisterConnectionCallbacks(connectionCallback);
+        lostApiClient?.disconnect()
+        super.onDestroy()
     }
 
     /**
@@ -514,8 +583,7 @@ class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Voi
         vh.mapView = contentView.findViewById(R.id.map)
 /*
         if (context != null && ActivityCompat.checkSelfPermission(context!!,
-                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED || ActivityCompat.checkSelfPermission(context!!,
-                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             LocationServices.getFusedLocationProviderClient(context!!)
                     .lastLocation.addOnSuccessListener { location ->
                 this.currentLocation = location
@@ -571,6 +639,20 @@ class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Voi
                 startMarker1.position = startPoint
                 startMarker1.title = routeStop?.name
                 vh.mapView?.overlays?.add(startMarker1)
+
+                mMyLocationOverlay = MyLocationNewOverlay(vh.mapView)
+                mMyLocationOverlay?.enableMyLocation(myLocationProvider)
+                mMyLocationOverlay?.setDrawAccuracyEnabled(true)
+                val drawable : Drawable? = ContextCompat.getDrawable(context!!, R.drawable.ic_outline_my_location_24dp)
+                if (drawable != null) {
+                    val bitmap: Bitmap = Bitmap.createBitmap(drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888)
+                    val canvas = Canvas(bitmap)
+                    drawable.setBounds(0, 0, canvas.width, canvas.height)
+                    drawable.draw(canvas)
+                    mMyLocationOverlay?.setDirectionArrow(bitmap, bitmap)
+                }
+
+                vh.mapView?.overlays?.add(mMyLocationOverlay)
 
                 val mCompassOverlay = CompassOverlay(context!!,
                         InternalCompassOrientationProvider(context!!),
@@ -895,6 +977,43 @@ class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Voi
         if (currentLocation != null) {
             val distance = currentLocation!!.distanceTo(location)
             vh.distanceText?.text = DecimalFormat("~#.##km").format((distance / 1000).toDouble())
+        }
+    }
+
+    private fun startLocationUpdates() {
+        if (context == null) return
+        if (updateStarted) return
+
+        if (!(lostApiClient?.isConnected()?:false)) {
+            return
+        }
+
+        if (ActivityCompat.checkSelfPermission(context!!,
+                        Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            val request: LocationRequest = LocationRequest.create()
+                    .setInterval(10000)
+                    .setFastestInterval(5000)
+                    .setSmallestDisplacement(10.0F)
+                    .setPriority(LocationRequest.PRIORITY_GPS_ONLY)
+            FusedLocationApi.requestLocationUpdates(lostApiClient, request, locationCallback)
+
+            /* val locationRequest = LocationRequest.create()
+            locationRequest.interval = 10000
+            locationRequest.fastestInterval = (10000 / 2).toLong()
+            locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            LocationServices.getFusedLocationProviderClient(context!!)
+                    .requestLocationUpdates(locationRequest, locationCallback!!, null/* Looper */)
+
+             */
+            updateStarted = true
+        }
+    }
+
+    private fun stopLocationUpdates() {
+        if (context == null || locationCallback == null) return
+        if (updateStarted) {
+            FusedLocationApi.removeLocationUpdates(lostApiClient, locationCallback)
+            updateStarted = false
         }
     }
 

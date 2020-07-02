@@ -2,10 +2,13 @@
 
 ## 支持開放公共服務數據，結束資訊渠道壟斷
 
-* 此版本為經 odsp 修改的版本，以暫時保持與某巴 ETA 的兼容性。
+* 此版本為經 odsp 修改的版本，以暫時保持 BusETA 與某巴 ETA API 的互通性。
 
-* 當中與 Google Play Service （地圖及到站提示），Firebase，廣告等部份，由於須另行編繹，不能使用原作者授權，已經停用，部份功能受影響。
+* 當中與 Google Play Service （地圖及到站提示），Firebase，廣告等部份，由於須另行編繹，不能使用原作者授權密鑰，所以已經停用，部份功能受影響。
 
+* 我們不提供預編譯的APK，也不能保證程序會正常運行
+
+## Repository 來源 README 文件
 
 [![Banner](/images/banner.png?raw=true "BusETA (http://buseta.alvinhkh.com)")](http://bit.ly/hkbuseta)
 
