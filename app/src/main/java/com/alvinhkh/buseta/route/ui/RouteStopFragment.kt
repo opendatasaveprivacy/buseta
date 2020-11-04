@@ -987,6 +987,7 @@ class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Voi
         if (!(lostApiClient?.isConnected()?:false)) {
             return
         }
+        Timber.d("xxx StopFragment start update")
 
         if (ActivityCompat.checkSelfPermission(context!!,
                         Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
@@ -1012,6 +1013,7 @@ class RouteStopFragment : BottomSheetDialogFragment() /*, OnCompleteListener<Voi
     private fun stopLocationUpdates() {
         if (context == null || locationCallback == null) return
         if (updateStarted) {
+            Timber.d("xxx StopFragment stop update")
             FusedLocationApi.removeLocationUpdates(lostApiClient, locationCallback)
             updateStarted = false
         }

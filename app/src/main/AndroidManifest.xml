@@ -205,13 +205,14 @@
             android:theme="@android:style/Theme.Translucent" />-->
 
         <!-- Google Play Services OssLicensesActivity -->
+        <!--
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name="com.google.android.gms.oss.licenses.OssLicensesActivity"
             android:theme="@style/AppTheme" />
-
+        -->
         <!-- Services -->
         <service
             android:name=".service.ProviderUpdateService"

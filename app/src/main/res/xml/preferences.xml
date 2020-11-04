@@ -142,7 +142,7 @@
             android:key="share_app"
             android:title="@string/message_share_title"
             android:persistent="false" />
-
+<!--
         <PreferenceScreen
             android:key="open_source_license"
             android:title="@string/open_source_license"
@@ -156,7 +156,7 @@
             </intent>
 
         </PreferenceScreen>
-
+-->
         <Preference
             android:key="github_issue"
             android:title="@string/github_issues"

@@ -8,5 +8,5 @@ data class KmbEtaReq(
         var d: String,
 
         @SerializedName("ctr")
-        var ctr: Long
+        var ctr: String
 )

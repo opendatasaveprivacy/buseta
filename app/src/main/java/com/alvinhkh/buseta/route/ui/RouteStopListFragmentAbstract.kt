@@ -46,6 +46,7 @@ import com.google.android.gms.location.LocationServices */
 import com.alvinhkh.buseta.utils.ConnectivityUtil
 import com.alvinhkh.buseta.utils.PreferenceUtil
 import com.mapzen.android.lost.api.*
+import timber.log.Timber
 // import com.google.android.gms.maps.model.Marker
 import java.util.UUID
 
@@ -489,7 +490,7 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
         if (!(lostApiClient?.isConnected()?:false)) {
             return
         }
-
+        Timber.d("xxx Abs start update")
         if (ActivityCompat.checkSelfPermission(context!!,
                         Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             val request: LocationRequest = LocationRequest.create()
@@ -515,6 +516,7 @@ abstract class RouteStopListFragmentAbstract : Fragment(),  SwipeRefreshLayout.O
     private fun stopLocationUpdates() {
         if (context == null || locationCallback == null) return
         if (updateStarted) {
+            Timber.d("xxx Abs stop update")
             LocationServices.FusedLocationApi.removeLocationUpdates(lostApiClient, locationCallback)
             updateStarted = false
         }

@@ -20,6 +20,7 @@ class KmbInfoWorker(context : Context, params : WorkerParameters)
         val routeServiceType = inputData.getString(C.EXTRA.ROUTE_SERVICE_TYPE)?:return Result.failure()
 
         try {
+            Timber.d("KmbInfoWorker stops $routeNo")
             val response = kmbService.stops(routeNo, routeSequence, routeServiceType).execute()
             if (!response.isSuccessful) {
                 return Result.failure()

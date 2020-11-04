@@ -195,7 +195,7 @@ class KmbServiceRequest(context: Context, private val kmbService: KmbService) {
             val encodedParams = KmbServiceEncodeUtil.encodeKmb(query + keyParam, ivLong).encodedString
 
             try {
-                val response = kmbService.eta(KmbEtaReq(encodedParams!!, ivLong)).execute()
+                val response = kmbService.eta(KmbEtaReq(encodedParams!!, ivLong.toString())).execute()
                 this.responseCode = response.code()
                 if (response.isSuccessful) {
                     return response.body()

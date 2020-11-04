@@ -26,6 +26,8 @@ class KmbEtaRouteWorker(context : Context, params : WorkerParameters)
                 .putString(C.EXTRA.COMPANY_CODE, companyCode)
                 .build()
 
+        Timber.d("KmbEtaRouteWorker")
+
         val response = kmbService.etaRoutes().execute()
         if (!response.isSuccessful) {
             return Result.failure(outputData)

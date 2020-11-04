@@ -31,6 +31,8 @@ class KmbRouteWorker(context : Context, params : WorkerParameters)
                 .build()
 
         try {
+            Timber.d("KmbRouteWorker $routeNo")
+
             val response = kmbService.routeBound(routeNo).execute()
             if (!response.isSuccessful || !response.body()?.exception.isNullOrEmpty()) {
                 return Result.failure(outputData)

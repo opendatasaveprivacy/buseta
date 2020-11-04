@@ -89,6 +89,7 @@ class MainActivity : BaseActivity() {
                         ft.commit()
                     }
                 }
+                /*
                 R.id.action_traffic_news -> {
                     if (fm.findFragmentByTag("traffic_news") == null) {
                         val newsUrl = "https://www.hkemobility.gov.hk/loadtrafficinfo.php?mode=0&lang=TC&color=null&sysid=54"
@@ -100,7 +101,7 @@ class MainActivity : BaseActivity() {
                         ft.addToBackStack("traffic_news")
                         ft.commit()
                     }
-                }
+                }*/
                 else -> finish()
             }
             supportActionBar?.title = title
@@ -136,7 +137,7 @@ class MainActivity : BaseActivity() {
                     "FollowFragment" -> bottomNavigationView.selectedItemId = R.id.action_follow
                     "HistoryFragment" -> bottomNavigationView.selectedItemId = R.id.action_search_history
                     "MtrLineStatusFragment" -> bottomNavigationView.selectedItemId = R.id.action_railway
-                    "WebViewFragment" -> bottomNavigationView.selectedItemId = R.id.action_traffic_news
+                    //"WebViewFragment" -> bottomNavigationView.selectedItemId = R.id.action_traffic_news
                 }
             }
         }

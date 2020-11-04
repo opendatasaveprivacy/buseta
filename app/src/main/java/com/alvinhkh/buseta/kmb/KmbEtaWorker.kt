@@ -12,6 +12,7 @@ import com.alvinhkh.buseta.kmb.util.KmbServiceRequest.KmbEtaSpec
 import com.alvinhkh.buseta.kmb.util.KmbServiceRequest
 import com.alvinhkh.buseta.route.dao.RouteDatabase
 import org.jsoup.Jsoup
+import timber.log.Timber
 
 class KmbEtaWorker(private val context : Context, params : WorkerParameters)
     : Worker(context, params) {
@@ -53,6 +54,7 @@ class KmbEtaWorker(private val context : Context, params : WorkerParameters)
 
         val serviceRequest = KmbServiceRequest(context, kmbService)
         try {
+            Timber.d("KmbEtaWorker $routeNo")
             val results = serviceRequest.getEta(KmbEtaSpec(
                     routeStop.routeNo, routeStop.routeSequence, routeStop.sequence,
                     routeStop.routeServiceType), "tc")
